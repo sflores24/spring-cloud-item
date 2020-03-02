@@ -15,7 +15,7 @@ import mx.com.springboot.app.items.models.Item;
 import mx.com.springboot.app.items.models.Producto;
 import mx.com.springboot.app.items.models.service.IItemService;
 
-@Service
+@Service("serviceRestTemp")
 public class ItemServiceImpl implements IItemService {
 
 	@Autowired
@@ -25,7 +25,7 @@ public class ItemServiceImpl implements IItemService {
 	@Override
 	public List<Item> findAll() {
 		List<Producto> productos = Arrays
-				.asList(cteRest.getForObject("http://localhost:8001/listar", Producto[].class));
+				.asList(cteRest.getForObject("http://servicio-productos/listar", Producto[].class));
 		return productos.stream().map(prod -> new Item(prod, 1)).collect(Collectors.toList());
 	}
 
@@ -33,7 +33,7 @@ public class ItemServiceImpl implements IItemService {
 	public Item findById(Long id, Integer cantidad) {
 		Map<String, String> pathVariables = new HashMap<String, String>();
 			pathVariables.put("id", id.toString());
-		Producto producto = cteRest.getForObject("http://localhost:8001/ver/{id}", Producto.class, pathVariables);
+		Producto producto = cteRest.getForObject("http://servicio-productos/ver/{id}", Producto.class, pathVariables);
 		return new Item(producto, cantidad);
 	}
 
