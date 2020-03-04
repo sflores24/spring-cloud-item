@@ -24,8 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
+import mx.com.springboot.app.commons.models.entities.Producto;
 import mx.com.springboot.app.items.models.Item;
-import mx.com.springboot.app.items.models.Producto;
 import mx.com.springboot.app.items.models.service.IItemService;
 
 @RefreshScope
@@ -40,8 +40,8 @@ public class ItemController {
 	private String texto;
 
 	@Autowired
-	//@Qualifier("serviceFeign")
-	@Qualifier("serviceRestTemp")
+	@Qualifier("serviceFeign")
+	//@Qualifier("serviceRestTemp")
 	private IItemService itemService;
 
 	@GetMapping("/obtener-config")

@@ -14,8 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import mx.com.springboot.app.commons.models.entities.Producto;
 import mx.com.springboot.app.items.models.Item;
-import mx.com.springboot.app.items.models.Producto;
 import mx.com.springboot.app.items.models.service.IItemService;
 
 @Service("serviceRestTemp")
