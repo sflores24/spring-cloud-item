@@ -9,11 +9,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
@@ -22,6 +28,7 @@ import mx.com.springboot.app.items.models.Item;
 import mx.com.springboot.app.items.models.Producto;
 import mx.com.springboot.app.items.models.service.IItemService;
 
+@RefreshScope
 @RestController
 public class ItemController {
 	Logger log = LoggerFactory.getLogger(ItemController.class);
@@ -33,8 +40,8 @@ public class ItemController {
 	private String texto;
 
 	@Autowired
-	@Qualifier("serviceFeign")
-	// @Qualifier("serviceRestTemp")
+	//@Qualifier("serviceFeign")
+	@Qualifier("serviceRestTemp")
 	private IItemService itemService;
 
 	@GetMapping("/obtener-config")
@@ -75,5 +82,23 @@ public class ItemController {
 		item.setProducto(producto);
 
 		return item;
+	}
+	
+	@PostMapping("/crear")
+	@ResponseStatus(HttpStatus.CREATED)
+	public Producto crear(@RequestBody Producto producto) {
+		return itemService.save(producto);
+	}
+	
+	@PutMapping("/editar/{id}")
+	@ResponseStatus(HttpStatus.CREATED)
+	public Producto editar(@PathVariable Long id, @RequestBody Producto producto) {
+		return itemService.update(id, producto);
+	}
+	
+	@DeleteMapping("/eliminar/{id}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void eliminar(@PathVariable Long id) {
+		itemService.delete(id);
 	}
 }

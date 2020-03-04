@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import mx.com.springboot.app.items.clientes.IProductoClienteRest;
 import mx.com.springboot.app.items.models.Item;
+import mx.com.springboot.app.items.models.Producto;
 import mx.com.springboot.app.items.models.service.IItemService;
 
 @Service("serviceFeign")
@@ -26,6 +27,21 @@ public class ItemServiceFeignImpl implements IItemService {
 	@Override
 	public Item findById(Long id, Integer cantidad) {
 		return new Item(clienteFeign.findById(id), cantidad);
+	}
+
+	@Override
+	public Producto save(Producto producto) {
+		return clienteFeign.crear(producto);
+	}
+
+	@Override
+	public Producto update(Long id, Producto producto) {
+		return clienteFeign.editar(id, producto);
+	}
+
+	@Override
+	public void delete(Long id) {
+		clienteFeign.eliminar(id);
 	}
 
 }

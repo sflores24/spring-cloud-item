@@ -8,6 +8,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -31,10 +34,45 @@ public class ItemServiceImpl implements IItemService {
 
 	@Override
 	public Item findById(Long id, Integer cantidad) {
-		Map<String, String> pathVariables = new HashMap<String, String>();
-			pathVariables.put("id", id.toString());
-		Producto producto = cteRest.getForObject("http://servicio-productos/ver/{id}", Producto.class, pathVariables);
+		Producto producto = cteRest.getForObject("http://servicio-productos/ver/{id}", Producto.class,
+				getIdPathVariableInMap(id));
 		return new Item(producto, cantidad);
+	}
+
+	@Override
+	public Producto save(Producto producto) {
+		HttpEntity<Producto> bodyRequest = new HttpEntity<Producto>(producto);
+
+		ResponseEntity<Producto> response = cteRest.exchange("http://servicio-productos/crear", HttpMethod.POST,
+				bodyRequest, Producto.class);
+
+		return getProductoFromResponse(response);
+	}
+
+	private Producto getProductoFromResponse(ResponseEntity<Producto> response) {
+		return response.getBody();
+	}
+
+	private Map<String, String> getIdPathVariableInMap(Long id) {
+		Map<String, String> pathVariables = new HashMap<String, String>();
+		pathVariables.put("id", id.toString());
+
+		return pathVariables;
+	}
+
+	@Override
+	public Producto update(Long id, Producto producto) {
+		HttpEntity<Producto> bodyRequest = new HttpEntity<Producto>(producto);
+
+		ResponseEntity<Producto> response = cteRest.exchange("http://servicio-productos/editar/{id}", HttpMethod.PUT,
+				bodyRequest, Producto.class, getIdPathVariableInMap(id));
+
+		return getProductoFromResponse(response);
+	}
+
+	@Override
+	public void delete(Long id) {
+		cteRest.delete("http://servicio-productos/eliminar/{id}", getIdPathVariableInMap(id));
 	}
 
 }
